@@ -1,3 +1,3 @@
 ### RSS-FEED
 
-Minimal rss reader.
+Minimal rss reader and viewer.
