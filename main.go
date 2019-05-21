@@ -1,12 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"text/template"
 
 	"github.com/mmcdole/gofeed"
 )
+
+type FeedItem struct {
+	Link      string
+	Title     string
+	Published string
+}
+
+type FeedPage struct {
+	FeedTitle string
+	Items     []*FeedItem
+}
 
 func main() {
 	feedsList := os.Args[1:]
@@ -17,16 +29,32 @@ func main() {
 		log.Println(err.Error())
 	}
 
-	render(feed.Items)
+	data := FeedPage{
+		FeedTitle: feed.Title,
+		Items:     convert(feed.Items),
+	}
+
+	tmpl := template.Must(template.ParseFiles("./web/feed.html"))
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.Execute(w, data)
+	})
+
+	log.Println("server running at http://localhost:8080")
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Println(err.Error())
+	}
 }
 
-func render(items []*gofeed.Item) {
-	for _, item := range items {
-		if len(item.Title) > 70 {
-			fmt.Printf("%v\n", item.Title)
-			fmt.Printf("%70v %s\n", "", item.Link)
-		} else {
-			fmt.Printf("%-70v %s\n", item.Title, item.Link)
-		}
+func convert(gofeedItems []*gofeed.Item) (feedItems []*FeedItem) {
+	for _, item := range gofeedItems {
+		feedItems = append(feedItems, &FeedItem{
+			Link:      item.Link,
+			Title:     item.Title,
+			Published: item.PublishedParsed.Format("Jan _2 2006"),
+		})
 	}
+
+	return
 }
