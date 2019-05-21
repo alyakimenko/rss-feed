@@ -1,0 +1,6 @@
+<h1>{{.FeedTitle}}<h1>
+<ul>
+    {{range .Items}}
+        <li><a href="{{.Link}}}" style="color:tomato">{{.Title}}</a> [{{.Published}}]</li>
+    {{end}}
+</ul>
