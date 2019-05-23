@@ -6,6 +6,7 @@ import (
 	"os"
 	"text/template"
 
+	"github.com/gorilla/mux"
 	"github.com/mmcdole/gofeed"
 )
 
@@ -16,8 +17,9 @@ type FeedItem struct {
 }
 
 type FeedPage struct {
-	FeedTitle string
-	Items     []*FeedItem
+	FeedTitle       string
+	FeedDescription string
+	Items           []*FeedItem
 }
 
 func main() {
@@ -30,15 +32,22 @@ func main() {
 	}
 
 	data := FeedPage{
-		FeedTitle: feed.Title,
-		Items:     convert(feed.Items),
+		FeedTitle:       feed.Title,
+		FeedDescription: feed.Description,
+		Items:           convert(feed.Items),
 	}
 
-	tmpl := template.Must(template.ParseFiles("./web/feed.html"))
+	tmpl := template.Must(template.ParseGlob("templates/*.html"))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.Execute(w, data)
-	})
+	router := mux.NewRouter()
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "feed.html", data)
+	}).Methods("GET")
+
+	fs := http.FileServer(http.Dir("./static/"))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+
+	http.Handle("/", router)
 
 	log.Println("server running at http://localhost:8080")
 
