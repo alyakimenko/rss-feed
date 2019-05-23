@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RSS-feed</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <h2>{{.FeedTitle}}</h2>
+    <p><em>{{.FeedDescription}}</em></p>
+
+    <div class="content">
+        {{range .Items}}
+            <h2>{{.Title}}</h2>
+            <p>Published at {{.Published}}</p>
+            <a target='_blank' href="{{.Link}}">Read More</a>
+        {{end}}
+    </div>
+</body>
+
+</html>
