@@ -13,9 +13,11 @@
 
     <div class="content">
         {{range .Items}}
-            <h2>{{.Title}}</h2>
-            <p>Published at {{.Published}}</p>
-            <a target='_blank' href="{{.Link}}">Read More</a>
+            <div>
+                <h2>{{.Title}}</h2>
+                <p>Published at {{.Published}}</p>
+                <a target='_blank' href="{{.Link}}">Read More</a>
+            </div>
         {{end}}
     </div>
 </body>
