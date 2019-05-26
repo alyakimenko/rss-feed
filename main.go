@@ -31,7 +31,7 @@ func main() {
 		log.Println(err.Error())
 	}
 
-	data := FeedPage{
+	data := &FeedPage{
 		FeedTitle:       feed.Title,
 		FeedDescription: feed.Description,
 		Items:           convert(feed.Items),
