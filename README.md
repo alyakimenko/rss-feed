@@ -9,5 +9,5 @@ Example of usage:
 ~ go get github.com/alyakimenko/rss-feed
 ~ cd $GOPATH/src/github.com/alyakimenko/rss-feed
 ~ go build main.go
-~ ./main.go https://dystopia.me/rss
+~ ./main https://dystopia.me/rss
 ```
